@@ -38,9 +38,9 @@ export const findUser = async (
 export const signToken = async (
  user: DocumentType<User>
 ) => {
- // Sign the access token
  const access_token = signJwt(
   { sub: user._id },
+  "accessTokenPrivateKey",
   {
    expiresIn: `${config.get<number>(
     "accessTokenExpiresIn"
@@ -48,16 +48,22 @@ export const signToken = async (
   }
  );
 
- // Create a Session
- // @ts-ignore
- redisClient.set(
-  user._id.toString(),
-  JSON.stringify(user),
+ // Sign the refresh token
+ const refresh_token = signJwt(
+  { sub: user._id },
+  "refreshTokenPrivateKey",
   {
-   EX: 60 * 60,
+   expiresIn: `${config.get<number>(
+    "refreshTokenExpiresIn"
+   )}m`,
   }
  );
 
+ // Create a Session
+ redisClient.set(String(user._id), JSON.stringify(user), {
+  EX: 60 * 60,
+ });
+
  // Return access token
- return { access_token };
+ return { access_token, refresh_token };
 };

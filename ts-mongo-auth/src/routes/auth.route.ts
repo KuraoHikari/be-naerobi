@@ -1,6 +1,8 @@
 import express from "express";
 import {
  loginHandler,
+ logoutHandler,
+ refreshAccessTokenHandler,
  registerHandler,
 } from "../controllers/auth.controller";
 import { validate } from "../middleware/validate";
@@ -8,6 +10,8 @@ import {
  createUserSchema,
  loginUserSchema,
 } from "../schema/user.schema";
+import { deserializeUser } from "../middleware/deserializeUser";
+import { requireUser } from "../middleware/requireUser";
 
 const router = express.Router();
 
@@ -24,5 +28,13 @@ router.post(
  validate(loginUserSchema),
  loginHandler
 );
+
+// Refresh access toke route
+router.get("/refresh", refreshAccessTokenHandler);
+
+router.use(deserializeUser, requireUser);
+
+// Logout User
+router.get("/logout", logoutHandler);
 
 export default router;
