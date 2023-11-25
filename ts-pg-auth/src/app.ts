@@ -12,25 +12,25 @@ const prisma = new PrismaClient();
 const app = express();
 
 async function bootstrap() {
- app.get("/api/health", async (_, res: Response) => {
-  const message = await redisClient.get("try");
+  app.get("/api/health", async (_, res: Response) => {
+    const message = await redisClient.get("try");
 
-  res.status(200).json({
-   status: "success",
-   message,
+    res.status(200).json({
+      status: "success",
+      message,
+    });
   });
- });
 
- const port = config.get<number>("port");
- app.listen(port, () => {
-  console.log(`Server on port: ${port}`);
- });
+  const port = config.get<number>("port");
+  app.listen(port, () => {
+    console.log(`Server on port: ${port}`);
+  });
 }
 
 bootstrap()
- .catch((err) => {
-  throw err;
- })
- .finally(async () => {
-  await prisma.$disconnect();
- });
+  .catch((err) => {
+    throw err;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
