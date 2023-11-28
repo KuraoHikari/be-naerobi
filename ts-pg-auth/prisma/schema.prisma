@@ -28,6 +28,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  provider String?
+  passwordResetToken String?
+  passwordResetAt DateTime?
+
   @@unique([email, verificationCode])
   @@index([email, verificationCode])
 }
