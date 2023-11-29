@@ -21,6 +21,31 @@ import {
 
 const router = express.Router();
 
+/**
+ * @openapi
+ * '/api/auth/register':
+ *  post:
+ *     tags:
+ *     - Auth
+ *     summary: Register a user
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/RegisterUserInput'
+ *     responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/RegisterUserResponse'
+ *      409:
+ *        description: Conflict
+ *      400:
+ *        description: Bad request
+ */
 router.post(
  "/register",
  validate(registerUserSchema),
