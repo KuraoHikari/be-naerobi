@@ -69,6 +69,10 @@ export const registerUserHandler = async (
   );
 
   const verifyCode = crypto.randomBytes(32).toString("hex");
+  console.log(
+   "🚀 ~ file: auth.controller.ts:72 ~ verifyCode:",
+   verifyCode
+  );
 
   const verificationCode = crypto
    .createHash("sha256")
@@ -199,6 +203,7 @@ export const refreshAccessTokenHandler = async (
    return next(new AppError(403, message));
   }
 
+  // Validate refresh token
   const decoded = verifyJwt<{ sub: string }>(
    refresh_token,
    "refreshTokenPublicKey"
@@ -208,12 +213,14 @@ export const refreshAccessTokenHandler = async (
    return next(new AppError(403, message));
   }
 
+  // Check if user has a valid session
   const session = await redisClient.get(decoded.sub);
 
   if (!session) {
    return next(new AppError(403, message));
   }
 
+  // Check if user still exist
   const user = await findUniqueUser({
    id: JSON.parse(session).id,
   });
@@ -222,6 +229,7 @@ export const refreshAccessTokenHandler = async (
    return next(new AppError(403, message));
   }
 
+  // Sign new access token
   const access_token = signJwt(
    { sub: user.id },
    "accessTokenPrivateKey",
@@ -232,15 +240,21 @@ export const refreshAccessTokenHandler = async (
    }
   );
 
+  // 4. Add Cookies
   res.cookie(
    "access_token",
    access_token,
    accessTokenCookieOptions
   );
-
   res.cookie("logged_in", true, {
    ...accessTokenCookieOptions,
    httpOnly: false,
+  });
+
+  // 5. Send response
+  res.status(200).json({
+   status: "success",
+   access_token,
   });
  } catch (err: any) {
   next(err);

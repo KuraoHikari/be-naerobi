@@ -18,6 +18,11 @@ const options: swaggerJsdoc.Options = {
      scheme: "bearer",
      bearerFormat: "JWT",
     },
+    access_token: {
+     type: "apiKey",
+     in: "cookie",
+     name: "access_token",
+    },
    },
   },
   security: [

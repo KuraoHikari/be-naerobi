@@ -57,17 +57,6 @@ async function bootstrap() {
  app.use("/api/auth", authRouter);
  app.use("/api/users", userRouter);
 
- /**
-  * @openapi
-  * /api/healthchecker:
-  *  get:
-  *     tags:
-  *     - Healthcheck
-  *     description: Responds if the app is up and running
-  *     responses:
-  *       200:
-  *         description: App is up and running
-  */
  app.get("/api/healthchecker", (_, res: Response) => {
   res.status(200).json({
    status: "success",
