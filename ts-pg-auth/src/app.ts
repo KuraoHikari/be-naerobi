@@ -14,7 +14,11 @@ import { PrismaClient } from "@prisma/client";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
 import AppError from "./utils/appError";
-import swaggerDocs from "./docs/swagger";
+import {
+ swaggerDocs,
+ writeDocumentation,
+} from "./docs/swagger";
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 
 // import nodemailer from "nodemailer";
 
@@ -30,6 +34,7 @@ const app = express();
 
 async function bootstrap() {
  const port = config.get<number>("port");
+
  // TEMPLATE ENGINE
  app.set("view engine", "pug");
  app.set("views", `${__dirname}/views`);

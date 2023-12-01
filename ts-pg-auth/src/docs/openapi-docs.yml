@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: REST API Docs
+  description: This is the API
+servers:
+  - url: http://localhost:8000
+components:
+  schemas:
+    UserId:
+      type: string
+      example: "1212121"
+    RegisterUserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the user
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: Email address of the user
+          example: jane.doe@example.com
+        password:
+          type: string
+          example: stringPassword123
+        passwordConfirm:
+          type: string
+          example: stringPassword123
+      required:
+        - name
+        - email
+        - password
+        - passwordConfirm
+    LoginUserInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email address of the user
+          example: jane.doe@example.com
+        password:
+          type: string
+          example: stringPassword123
+      required:
+        - email
+        - password
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the user
+          example: 35681813-8ad3-476d-99f2-56d5f5647127
+        name:
+          type: string
+          description: Name of the user
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: Email address of the user
+          example: John Doe
+        photo:
+          type: string
+          format: email
+          description: User's profile photo
+          example: John Doe
+        role:
+          type: string
+          description: Role of the user
+          example: user
+        createdAt:
+          type: string
+          format: date-time
+          description: Date and time when the user was created
+          example: 2023-11-28T09:09:47.319Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: Date and time when the user was last updated
+          example: 2023-11-28T09:09:47.319Z
+        provider:
+          type: string
+          nullable: true
+          description: User's provider information
+      required:
+        - id
+        - name
+        - email
+        - photo
+        - createdAt
+        - updatedAt
+  parameters:
+    UserId:
+      schema:
+        $ref: "#/components/schemas/UserId"
+      required: true
+      name: id
+      in: path
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      description: Register User
+      summary: Register User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterUserInput"
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                required:
+                  - status
+        "400":
+          description: Bad request
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      description: Login into App
+      summary: Login User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserInput"
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  access_token:
+                    type: string
+                required:
+                  - status
+                  - access_token
+        "400":
+          description: Bad request
+  /users/{id}:
+    get:
+      description: Get user data by its id
+      summary: Get a single user
+      security:
+        - BearerAuthSchemaDocs: []
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "204":
+          description: No content - successful operation

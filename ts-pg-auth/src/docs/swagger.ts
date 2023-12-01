@@ -4,59 +4,73 @@ import swaggerUi from "swagger-ui-express";
 import { version } from "../../package.json";
 import log from "./logger";
 
-const options: swaggerJsdoc.Options = {
- definition: {
+import * as yaml from "yaml";
+import * as fs from "fs";
+import {
+ OpenAPIRegistry,
+ OpenApiGeneratorV3,
+} from "@asteasolutions/zod-to-openapi";
+import { ExecuteAllRouteRegistry } from "./routes/index.doc";
+
+export const registry = new OpenAPIRegistry();
+
+ExecuteAllRouteRegistry(registry);
+
+function getOpenApiDocumentation() {
+ const generator = new OpenApiGeneratorV3(
+  registry.definitions
+ );
+
+ return generator.generateDocument({
   openapi: "3.0.0",
   info: {
+   version: version,
    title: "REST API Docs",
-   version,
+   description: "This is the API",
   },
-  components: {
-   securitySchemes: {
-    bearerAuth: {
-     type: "http",
-     scheme: "bearer",
-     bearerFormat: "JWT",
-    },
-    access_token: {
-     type: "apiKey",
-     in: "cookie",
-     name: "access_token",
-    },
-   },
-  },
-  security: [
-   {
-    bearerAuth: [],
-   },
-  ],
- },
- apis: [
-  "./src/routes/*.ts",
-  "./src/schema/*.ts",
-  "./src/app.ts",
- ],
-};
+  servers: [{ url: "http://localhost:8000" }],
+ });
+}
 
-const swaggerSpec = swaggerJsdoc(options);
+export async function writeDocumentation() {
+ // OpenAPI JSON
+ const docs = getOpenApiDocumentation();
 
-function swaggerDocs(app: Express, port: number) {
+ // YAML equivalent
+ const fileContent = yaml.stringify(docs);
+
+ fs.writeFileSync(
+  `${__dirname}/openapi-docs.yml`,
+  fileContent,
+  {
+   encoding: "utf-8",
+  }
+ );
+}
+
+writeDocumentation();
+
+const file = fs.readFileSync(
+ `${__dirname}/openapi-docs.yml`,
+ "utf8"
+);
+const swaggerDocument = yaml.parse(file);
+
+export function swaggerDocs(app: Express, port: number) {
  // Swagger page
  app.use(
   "/docs",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec)
+  swaggerUi.setup(swaggerDocument)
  );
 
  // Docs in JSON format
  app.get("/docs.json", (req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/json");
-  res.send(swaggerSpec);
+  res.send(swaggerJsdoc(swaggerDocument));
  });
 
  log.info(
   `Docs available at http://localhost:${port}/docs`
  );
 }
-
-export default swaggerDocs;
