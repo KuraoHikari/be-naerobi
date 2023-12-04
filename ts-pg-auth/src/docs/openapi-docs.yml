@@ -7,6 +7,9 @@ servers:
   - url: http://localhost:8000
 components:
   schemas:
+    Cookie:
+      type: string
+      example: refresh_token=abcde12345; Path=/; HttpOnly
     UserId:
       type: string
       example: "1212121"
@@ -95,6 +98,12 @@ components:
         - createdAt
         - updatedAt
   parameters:
+    Cookie:
+      schema:
+        $ref: "#/components/schemas/Cookie"
+      required: true
+      name: refresh_token
+      in: cookie
     UserId:
       schema:
         $ref: "#/components/schemas/UserId"
@@ -141,6 +150,32 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/LoginUserInput"
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  access_token:
+                    type: string
+                required:
+                  - status
+                  - access_token
+        "400":
+          description: Bad request
+  /api/auth/refresh:
+    get:
+      tags:
+        - Auth
+      description: Get New Token with Refresh Token User
+      summary: Get New Token with Refresh Token User
+      parameters:
+        - $ref: "#/components/parameters/Cookie"
       responses:
         "200":
           description: Object with user data.

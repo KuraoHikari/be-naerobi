@@ -2,7 +2,7 @@ import {
  OpenAPIRegistry,
  extendZodWithOpenApi,
 } from "@asteasolutions/zod-to-openapi";
-import { z } from "zod";
+import { ZodString, z } from "zod";
 import { RegisterComponentType } from "../types";
 
 extendZodWithOpenApi(z);
@@ -39,6 +39,21 @@ export const LoginUserInputSchemaDocs = z
   }),
  })
  .openapi("LoginUserInput");
+
+export function VerificationCodeSchemaDocs(
+ registry: OpenAPIRegistry
+): ZodString {
+ return registry.registerParameter(
+  "UserId",
+  z.string().openapi({
+   param: {
+    name: "verificationCode",
+    in: "path",
+   },
+   example: "1212121",
+  })
+ );
+}
 
 export function BearerAuthSchemaDocs(
  registry: OpenAPIRegistry
