@@ -32,6 +32,10 @@ export const UserSchemaDocs = z
    description: "Name of the user",
    example: "John Doe",
   }),
+  password: z.string().openapi({
+   description: "Name of the user",
+   example: "John Doe",
+  }),
   email: z.string().openapi({
    format: "email",
    description: "Email address of the user",

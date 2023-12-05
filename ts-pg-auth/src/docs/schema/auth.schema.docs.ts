@@ -3,54 +3,25 @@ import {
  extendZodWithOpenApi,
 } from "@asteasolutions/zod-to-openapi";
 import { ZodString, z } from "zod";
-import { RegisterComponentType } from "../types";
+import {
+ AuthSchemaParamType,
+ RegisterComponentType,
+} from "../types";
 
 extendZodWithOpenApi(z);
 
-export const RegisterUserInputSchemaDocs = z
- .object({
-  name: z.string().openapi({
-   description: "Name of the user",
-   example: "John Doe",
-  }),
-  email: z.string().openapi({
-   format: "email",
-   description: "Email address of the user",
-   example: "jane.doe@example.com",
-  }),
-  password: z.string().openapi({
-   example: "stringPassword123",
-  }),
-  passwordConfirm: z.string().openapi({
-   example: "stringPassword123",
-  }),
- })
- .openapi("RegisterUserInput");
-
-export const LoginUserInputSchemaDocs = z
- .object({
-  email: z.string().openapi({
-   format: "email",
-   description: "Email address of the user",
-   example: "jane.doe@example.com",
-  }),
-  password: z.string().openapi({
-   example: "stringPassword123",
-  }),
- })
- .openapi("LoginUserInput");
-
-export function VerificationCodeSchemaDocs(
- registry: OpenAPIRegistry
+export function ParamAuthSchemaDocs(
+ registry: OpenAPIRegistry,
+ param: AuthSchemaParamType
 ): ZodString {
  return registry.registerParameter(
-  "UserId",
+  param.name,
   z.string().openapi({
    param: {
-    name: "verificationCode",
-    in: "path",
+    name: param.name,
+    in: param.inParam,
    },
-   example: "1212121",
+   example: param.example,
   })
  );
 }
@@ -66,5 +37,20 @@ export function BearerAuthSchemaDocs(
    scheme: "bearer",
    bearerFormat: "JWT",
   }
+ );
+}
+
+export function AccessTokenCookieSchemaDocs(
+ registry: OpenAPIRegistry
+): ZodString {
+ return registry.registerParameter(
+  "Cookie",
+  z.string().openapi({
+   param: {
+    name: "access_token",
+    in: "cookie",
+   },
+   example: "access_token=abcde12345; Path=/; HttpOnly",
+  })
  );
 }

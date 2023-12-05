@@ -1,14 +1,10 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 
-import {
- LoginUserInputSchemaDocs,
- RegisterUserInputSchemaDocs,
- VerificationCodeSchemaDocs,
-} from "../schema/auth.schema.docs";
+import { ParamAuthSchemaDocs } from "../schema/auth.schema.docs";
 import { DefalutResponseSchema } from "../schema/default.schema.docs";
 import { TagType } from "../types";
 import { z } from "zod";
-import { ZodString } from "zod";
+import { UserSchemaDocs } from "../schema/user.schema.docs";
 
 export function RegisterUserApiDoc(
  registry: OpenAPIRegistry,
@@ -24,7 +20,18 @@ export function RegisterUserApiDoc(
    body: {
     content: {
      "application/json": {
-      schema: RegisterUserInputSchemaDocs,
+      schema: UserSchemaDocs.omit({
+       id: true,
+       photo: true,
+       role: true,
+       createdAt: true,
+       updatedAt: true,
+       provider: true,
+      }).extend({
+       passwordConfirm: z.string().openapi({
+        example: "stringPassword123",
+       }),
+      }),
      },
     },
    },
@@ -61,7 +68,15 @@ export function LoginUserApiDoc(
    body: {
     content: {
      "application/json": {
-      schema: LoginUserInputSchemaDocs,
+      schema: UserSchemaDocs.omit({
+       id: true,
+       name: true,
+       photo: true,
+       role: true,
+       createdAt: true,
+       updatedAt: true,
+       provider: true,
+      }),
      },
     },
    },
@@ -99,7 +114,11 @@ export function RefreshTokenUserApiDoc(
   summary: "Get New Token with Refresh Token User",
   request: {
    cookies: z.object({
-    refresh_token: RefreshTokenCookieSchemaDocs(registry),
+    refresh_token: ParamAuthSchemaDocs(registry, {
+     name: "refresh_token",
+     inParam: "cookie",
+     example: "refresh_token=abcde12345; Path=/; HttpOnly",
+    }),
    }),
   },
   responses: {
@@ -124,16 +143,22 @@ export function RefreshTokenUserApiDoc(
 }
 
 export function VerifyEmailUserApiDoc(
- registry: OpenAPIRegistry
+ registry: OpenAPIRegistry,
+ tag: TagType
 ): void {
  registry.registerPath({
   method: "get",
-  path: "/verifyemail/{verificationCode}",
+  path: "/api/verifyemail/{verificationCode}",
+  tags: [tag],
   description: "Verifry Email after Register",
   summary: "Verification Code from Register User",
   request: {
    params: z.object({
-    verificationCode: VerificationCodeSchemaDocs(registry),
+    verificationCode: ParamAuthSchemaDocs(registry, {
+     name: "verificationCode",
+     inParam: "path",
+     example: "1212121",
+    }),
    }),
   },
   responses: {
@@ -157,32 +182,48 @@ export function VerifyEmailUserApiDoc(
  });
 }
 
-export function AccessTokenCookieSchemaDocs(
- registry: OpenAPIRegistry
-): ZodString {
- return registry.registerParameter(
-  "Cookie",
-  z.string().openapi({
-   param: {
-    name: "access_token",
-    in: "cookie",
+export function ForgotPasswordApiDoc(
+ registry: OpenAPIRegistry,
+ tag: TagType
+): void {
+ registry.registerPath({
+  method: "get",
+  path: "/api/auth/forgotpassword",
+  tags: [tag],
+  description: "Request for Forgot Password",
+  summary: "Request for Forgot Password",
+  request: {
+   body: {
+    content: {
+     "application/json": {
+      schema: UserSchemaDocs.omit({
+       id: true,
+       name: true,
+       password: true,
+       photo: true,
+       role: true,
+       createdAt: true,
+       updatedAt: true,
+       provider: true,
+      }),
+     },
+    },
    },
-   example: "access_token=abcde12345; Path=/; HttpOnly",
-  })
- );
-}
-
-export function RefreshTokenCookieSchemaDocs(
- registry: OpenAPIRegistry
-): ZodString {
- return registry.registerParameter(
-  "Cookie",
-  z.string().openapi({
-   param: {
-    name: "refresh_token",
-    in: "cookie",
+  },
+  responses: {
+   200: {
+    description: "Object with user data.",
+    content: {
+     "application/json": {
+      schema: DefalutResponseSchema.omit({
+       data: true,
+      }),
+     },
+    },
    },
-   example: "refresh_token=abcde12345; Path=/; HttpOnly",
-  })
- );
+   400: {
+    description: "Bad request",
+   },
+  },
+ });
 }

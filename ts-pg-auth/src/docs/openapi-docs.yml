@@ -7,49 +7,15 @@ servers:
   - url: http://localhost:8000
 components:
   schemas:
-    Cookie:
+    refresh_token:
       type: string
       example: refresh_token=abcde12345; Path=/; HttpOnly
+    verificationCode:
+      type: string
+      example: "1212121"
     UserId:
       type: string
       example: "1212121"
-    RegisterUserInput:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the user
-          example: John Doe
-        email:
-          type: string
-          format: email
-          description: Email address of the user
-          example: jane.doe@example.com
-        password:
-          type: string
-          example: stringPassword123
-        passwordConfirm:
-          type: string
-          example: stringPassword123
-      required:
-        - name
-        - email
-        - password
-        - passwordConfirm
-    LoginUserInput:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-          description: Email address of the user
-          example: jane.doe@example.com
-        password:
-          type: string
-          example: stringPassword123
-      required:
-        - email
-        - password
     User:
       type: object
       properties:
@@ -59,6 +25,10 @@ components:
           description: Unique identifier for the user
           example: 35681813-8ad3-476d-99f2-56d5f5647127
         name:
+          type: string
+          description: Name of the user
+          example: John Doe
+        password:
           type: string
           description: Name of the user
           example: John Doe
@@ -93,17 +63,24 @@ components:
       required:
         - id
         - name
+        - password
         - email
         - photo
         - createdAt
         - updatedAt
   parameters:
-    Cookie:
+    refresh_token:
       schema:
-        $ref: "#/components/schemas/Cookie"
+        $ref: "#/components/schemas/refresh_token"
       required: true
       name: refresh_token
       in: cookie
+    verificationCode:
+      schema:
+        $ref: "#/components/schemas/verificationCode"
+      required: true
+      name: verificationCode
+      in: path
     UserId:
       schema:
         $ref: "#/components/schemas/UserId"
@@ -121,7 +98,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RegisterUserInput"
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                  example: John Doe
+                password:
+                  type: string
+                  description: Name of the user
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  description: Email address of the user
+                  example: John Doe
+                passwordConfirm:
+                  type: string
+                  example: stringPassword123
+              required:
+                - name
+                - password
+                - email
+                - passwordConfirm
       responses:
         "200":
           description: Object with user data.
@@ -149,7 +148,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginUserInput"
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: Name of the user
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  description: Email address of the user
+                  example: John Doe
+              required:
+                - password
+                - email
       responses:
         "200":
           description: Object with user data.
@@ -175,7 +187,7 @@ paths:
       description: Get New Token with Refresh Token User
       summary: Get New Token with Refresh Token User
       parameters:
-        - $ref: "#/components/parameters/Cookie"
+        - $ref: "#/components/parameters/refresh_token"
       responses:
         "200":
           description: Object with user data.
@@ -192,6 +204,68 @@ paths:
                 required:
                   - status
                   - access_token
+        "400":
+          description: Bad request
+  /api/verifyemail/{verificationCode}:
+    get:
+      tags:
+        - Auth
+      description: Verifry Email after Register
+      summary: Verification Code from Register User
+      parameters:
+        - $ref: "#/components/parameters/verificationCode"
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  access_token:
+                    type: string
+                required:
+                  - status
+                  - access_token
+        "400":
+          description: Bad request
+  /api/auth/forgotpassword:
+    get:
+      tags:
+        - Auth
+      description: Request for Forgot Password
+      summary: Request for Forgot Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email address of the user
+                  example: John Doe
+              required:
+                - email
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                required:
+                  - status
         "400":
           description: Bad request
   /users/{id}:

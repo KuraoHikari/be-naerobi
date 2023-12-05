@@ -5,4 +5,12 @@ export interface RegisterComponentType {
  };
 }
 
+export interface AuthSchemaParamType {
+ name: string;
+ inParam: InParamType;
+ example: string;
+}
+
 export type TagType = "Auth" | "User";
+
+export type InParamType = "cookie" | "path";
