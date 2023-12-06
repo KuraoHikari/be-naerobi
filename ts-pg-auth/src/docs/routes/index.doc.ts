@@ -1,12 +1,15 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { GetUser } from "./user.routes.docs";
+
 import {
  ForgotPasswordApiDoc,
+ LogOutUserApiDoc,
  LoginUserApiDoc,
  RefreshTokenUserApiDoc,
  RegisterUserApiDoc,
+ ResetPasswordApiDoc,
  VerifyEmailUserApiDoc,
 } from "./auth.routes.docs";
+import { GetMeApiDoc } from "./user.routes.docs";
 
 export function ExecuteAllRouteRegistry(
  registry: OpenAPIRegistry
@@ -16,5 +19,7 @@ export function ExecuteAllRouteRegistry(
  RefreshTokenUserApiDoc(registry, "Auth");
  VerifyEmailUserApiDoc(registry, "Auth");
  ForgotPasswordApiDoc(registry, "Auth");
- GetUser(registry);
+ ResetPasswordApiDoc(registry, "Auth");
+ LogOutUserApiDoc(registry, "Auth");
+ GetMeApiDoc(registry, "User");
 }

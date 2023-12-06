@@ -1,28 +1,44 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
 
+import { UserSchemaDocs } from "../schema/user.schema.docs";
 import {
- UserIdSchemaDocs,
- UserSchemaDocs,
-} from "../schema/user.schema.docs";
-import { BearerAuthSchemaDocs } from "../schema/auth.schema.docs";
+ DefalutResponseSchema,
+ ParamSchemaDocs,
+} from "../schema/default.schema.docs";
+import { TagType } from "../types";
 
-export function GetUser(registry: OpenAPIRegistry): void {
+export function GetMeApiDoc(
+ registry: OpenAPIRegistry,
+ tag: TagType
+): void {
  registry.registerPath({
   method: "get",
-  path: "/users/{id}",
-  description: "Get user data by its id",
-  summary: "Get a single user",
-  security: [{ [BearerAuthSchemaDocs.name]: [] }],
+  tags: [tag],
+  path: "/api/user/me",
+  description: "Get User Detail",
+  summary: "Get User Detail",
   request: {
-   params: z.object({ id: UserIdSchemaDocs(registry) }),
+   cookies: z.object({
+    access_token: ParamSchemaDocs(registry, {
+     name: "access_token",
+     inParam: "cookie",
+     example: "access_token=abcde12345; Path=/; HttpOnly",
+    }),
+   }),
   },
   responses: {
    200: {
     description: "Object with user data.",
     content: {
      "application/json": {
-      schema: UserSchemaDocs,
+      schema: DefalutResponseSchema.omit({
+       message: true,
+      }).extend({
+       data: UserSchemaDocs.omit({
+        password: true,
+       }),
+      }),
      },
     },
    },

@@ -3,28 +3,9 @@ import {
  extendZodWithOpenApi,
 } from "@asteasolutions/zod-to-openapi";
 import { ZodString, z } from "zod";
-import {
- AuthSchemaParamType,
- RegisterComponentType,
-} from "../types";
+import { RegisterComponentType } from "../types";
 
 extendZodWithOpenApi(z);
-
-export function ParamAuthSchemaDocs(
- registry: OpenAPIRegistry,
- param: AuthSchemaParamType
-): ZodString {
- return registry.registerParameter(
-  param.name,
-  z.string().openapi({
-   param: {
-    name: param.name,
-    in: param.inParam,
-   },
-   example: param.example,
-  })
- );
-}
 
 export function BearerAuthSchemaDocs(
  registry: OpenAPIRegistry

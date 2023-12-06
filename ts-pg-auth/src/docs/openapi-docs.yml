@@ -13,61 +13,12 @@ components:
     verificationCode:
       type: string
       example: "1212121"
-    UserId:
+    resetToken:
       type: string
       example: "1212121"
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the user
-          example: 35681813-8ad3-476d-99f2-56d5f5647127
-        name:
-          type: string
-          description: Name of the user
-          example: John Doe
-        password:
-          type: string
-          description: Name of the user
-          example: John Doe
-        email:
-          type: string
-          format: email
-          description: Email address of the user
-          example: John Doe
-        photo:
-          type: string
-          format: email
-          description: User's profile photo
-          example: John Doe
-        role:
-          type: string
-          description: Role of the user
-          example: user
-        createdAt:
-          type: string
-          format: date-time
-          description: Date and time when the user was created
-          example: 2023-11-28T09:09:47.319Z
-        updatedAt:
-          type: string
-          format: date-time
-          description: Date and time when the user was last updated
-          example: 2023-11-28T09:09:47.319Z
-        provider:
-          type: string
-          nullable: true
-          description: User's provider information
-      required:
-        - id
-        - name
-        - password
-        - email
-        - photo
-        - createdAt
-        - updatedAt
+    access_token:
+      type: string
+      example: access_token=abcde12345; Path=/; HttpOnly
   parameters:
     refresh_token:
       schema:
@@ -81,12 +32,18 @@ components:
       required: true
       name: verificationCode
       in: path
-    UserId:
+    resetToken:
       schema:
-        $ref: "#/components/schemas/UserId"
+        $ref: "#/components/schemas/resetToken"
       required: true
-      name: id
+      name: resetToken
       in: path
+    access_token:
+      schema:
+        $ref: "#/components/schemas/access_token"
+      required: true
+      name: access_token
+      in: cookie
 paths:
   /api/auth/register:
     post:
@@ -233,7 +190,7 @@ paths:
         "400":
           description: Bad request
   /api/auth/forgotpassword:
-    get:
+    post:
       tags:
         - Auth
       description: Request for Forgot Password
@@ -268,20 +225,138 @@ paths:
                   - status
         "400":
           description: Bad request
-  /users/{id}:
-    get:
-      description: Get user data by its id
-      summary: Get a single user
-      security:
-        - BearerAuthSchemaDocs: []
+  api/auth/resetpassword/{resetToken}:
+    patch:
+      tags:
+        - Auth
+      description: Reset Password
+      summary: Reset Password
       parameters:
-        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/resetToken"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: Name of the user
+                  example: John Doe
+                passwordConfirm:
+                  type: string
+                  example: stringPassword123
+              required:
+                - password
+                - passwordConfirm
       responses:
         "200":
           description: Object with user data.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                required:
+                  - status
+        "400":
+          description: Bad request
+  /api/auth/logout:
+    get:
+      tags:
+        - Auth
+      description: LogOut User
+      summary: LogOut User
+      parameters:
+        - $ref: "#/components/parameters/access_token"
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                required:
+                  - status
+        "400":
+          description: Bad request
+  /api/user/me:
+    get:
+      tags:
+        - User
+      description: Get User Detail
+      summary: Get User Detail
+      parameters:
+        - $ref: "#/components/parameters/access_token"
+      responses:
+        "200":
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: Unique identifier for the user
+                        example: 35681813-8ad3-476d-99f2-56d5f5647127
+                      name:
+                        type: string
+                        description: Name of the user
+                        example: John Doe
+                      email:
+                        type: string
+                        format: email
+                        description: Email address of the user
+                        example: John Doe
+                      photo:
+                        type: string
+                        format: email
+                        description: User's profile photo
+                        example: John Doe
+                      role:
+                        type: string
+                        description: Role of the user
+                        example: user
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: Date and time when the user was created
+                        example: 2023-11-28T09:09:47.319Z
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: Date and time when the user was last updated
+                        example: 2023-11-28T09:09:47.319Z
+                      provider:
+                        type: string
+                        nullable: true
+                        description: User's provider information
+                    required:
+                      - id
+                      - name
+                      - email
+                      - photo
+                      - createdAt
+                      - updatedAt
+                required:
+                  - status
+                  - data
         "204":
           description: No content - successful operation
