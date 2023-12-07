@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  @@map(name:"users")
+
+  id String @id @default(uuid()) 
+
+  email String 
+  hash String
+
+  firstName String @db.VarChar(255)
+  lastName String @db.VarChar(255)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([email])
+  @@index([email])
+}
+
+
+model Bookmark {
+   @@map(name:"bookmarks")
+
+  id String @id @default(uuid()) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title String
+  description String?
+  link String
+}
