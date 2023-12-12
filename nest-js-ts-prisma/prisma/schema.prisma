@@ -18,6 +18,7 @@ model User {
 
   email String 
   hash String
+  hashedRt String?
 
   firstName String @db.VarChar(255)
   lastName String @db.VarChar(255)
