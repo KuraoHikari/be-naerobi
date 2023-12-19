@@ -9,5 +9,12 @@ services:
       - progresDB:/data/postgres
     env_file:
       - ./.env
+  test-db:
+    image: postgres:latest
+    container_name: test-db
+    ports:
+      - '6501:5432'
+    env_file:
+      - ./.env.test
 volumes:
   progresDB:

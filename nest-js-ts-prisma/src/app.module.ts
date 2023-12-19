@@ -3,12 +3,17 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from '@wahyubucil/nestjs-zod-openapi';
 import { ConfigModule } from '@nestjs/config';
+import { AtGuard } from './common/guards';
 
 @Module({
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AtGuard,
+    },
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
