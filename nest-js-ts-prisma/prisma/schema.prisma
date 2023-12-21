@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -26,13 +27,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  bookmarks Bookmark[]
+
   @@unique([email])
   @@index([email])
 }
 
 
 model Bookmark {
-   @@map(name:"bookmarks")
+  @@map(name:"bookmarks")
 
   id String @id @default(uuid()) 
   createdAt DateTime @default(now())
@@ -41,4 +44,9 @@ model Bookmark {
   title String
   description String?
   link String
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([title])
 }
