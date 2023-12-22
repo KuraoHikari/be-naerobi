@@ -13,7 +13,6 @@ export interface PaginatedResult<T> {
 export type PaginateOptions = {
   page?: number | string;
   perPage?: number | string;
-  orderBy?: Record<string, 'ASC' | 'DESC'>;
 };
 export type PaginateFunction = <T, K>(
   model: any,
@@ -27,7 +26,6 @@ export const paginator = (
   return async (model, args: any = { where: undefined }, options) => {
     const page = Number(options?.page || defaultOptions?.page) || 1;
     const perPage = Number(options?.perPage || defaultOptions?.perPage) || 10;
-    const orderBy = options?.orderBy || defaultOptions?.orderBy;
 
     const skip = page > 0 ? perPage * (page - 1) : 0;
     const [total, data] = await Promise.all([
@@ -36,7 +34,6 @@ export const paginator = (
         ...args,
         take: perPage,
         skip,
-        order: orderBy,
       }),
     ]);
     const lastPage = Math.ceil(total / perPage);

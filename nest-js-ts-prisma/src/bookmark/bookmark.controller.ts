@@ -15,16 +15,32 @@ import { Pagination, PaginationParams } from 'src/lib/paginationParam';
 
 @Controller('bookmark')
 export class BookmarkController {
-  constructor(private authService: BookmarkService) {}
+  constructor(private bookmarkService: BookmarkService) {}
 
   @Public()
   @Get()
   @HttpCode(HttpStatus.OK)
-  logout(
+  getBookmark(
     @PaginationParams() paginationParams: Pagination,
-    @SortingParams(['name', 'id', 'stateId']) sort?: Sorting,
-    @FilteringParams(['name', 'id', 'stateId']) filter?: Filtering,
+    @SortingParams(['createdAt', 'id', 'updatedAt', 'arrivedAt', 'code'])
+    sort?: Sorting,
+    @FilteringParams([
+      'wharehouse',
+      'code',
+      'name',
+      'destination',
+      'ownerName',
+      'companyName',
+    ])
+    filter?: Filtering,
   ) {
-    return { paginationParams, sort, filter };
+    return this.bookmarkService.bookmarkFindMany({
+      where: filter,
+      orderBy: sort,
+      page: {
+        page: paginationParams.page,
+        perPage: paginationParams.size,
+      },
+    });
   }
 }

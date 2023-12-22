@@ -6,8 +6,7 @@ import {
 import { Request } from 'express';
 
 export interface Sorting {
-  property: string;
-  direction: string;
+  [x: string]: string;
 }
 
 export const SortingParams = createParamDecorator(
@@ -36,7 +35,7 @@ export const SortingParams = createParamDecorator(
       if (!validParams.includes(property))
         throw new BadRequestException(`Invalid sort property: ${property}`);
 
-      sortObjects.push({ property, direction });
+      sortObjects.push({ [property]: direction });
     }
 
     return sortObjects;
