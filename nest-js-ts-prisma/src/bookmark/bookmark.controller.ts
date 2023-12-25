@@ -12,29 +12,23 @@ import { BookmarkService } from './bookmark.service';
 import { Sorting, SortingParams } from 'src/lib/sortingParam';
 import { Filtering, FilteringParams } from 'src/lib/filterParam';
 import { Pagination, PaginationParams } from 'src/lib/paginationParam';
+import { BookmarkParamId } from './dto/bookmark.dto';
 
 @Controller('bookmark')
 export class BookmarkController {
   constructor(private bookmarkService: BookmarkService) {}
 
   @Public()
-  @Get()
+  @Get('/')
   @HttpCode(HttpStatus.OK)
   getBookmark(
     @PaginationParams() paginationParams: Pagination,
-    @SortingParams(['createdAt', 'id', 'updatedAt', 'arrivedAt', 'code'])
+    @SortingParams(['createdAt', 'updatedAt', 'title'])
     sort?: Sorting,
-    @FilteringParams([
-      'wharehouse',
-      'code',
-      'name',
-      'destination',
-      'ownerName',
-      'companyName',
-    ])
+    @FilteringParams(['title', 'description', 'link', 'id'])
     filter?: Filtering,
   ) {
-    return this.bookmarkService.bookmarkFindMany({
+    return this.bookmarkService.findMany({
       where: filter,
       orderBy: sort,
       page: {
@@ -42,5 +36,15 @@ export class BookmarkController {
         perPage: paginationParams.size,
       },
     });
+  }
+
+  @Public()
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  getBookmarkById(
+    @GetCurrentUserId() userId: number,
+    @Param() { id }: BookmarkParamId,
+  ) {
+    return { id };
   }
 }

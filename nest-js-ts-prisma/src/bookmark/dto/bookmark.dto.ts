@@ -17,6 +17,17 @@ export class CreateBookmarkDto extends createZodDto(
   Bookmark.omit({ id: true, updatedAt: true, createdAt: true, userId: true }),
 ) {}
 
+export class BookmarkParamId extends createZodDto(
+  Bookmark.omit({
+    updatedAt: true,
+    createdAt: true,
+    userId: true,
+    title: true,
+    description: true,
+    link: true,
+  }),
+) {}
+
 export class UpdateBookmarkDto extends createZodDto(
   Bookmark.omit({ id: true, updatedAt: true, createdAt: true, userId: true }),
 ) {}

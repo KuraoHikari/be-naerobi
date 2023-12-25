@@ -14,7 +14,7 @@ const paginate: PaginateFunction = paginator({ perPage: 10 });
 export class BookmarkService {
   constructor(private prisma: PrismaService) {}
 
-  async bookmarkFindMany({
+  async findMany({
     where,
     orderBy,
     page,
@@ -31,5 +31,16 @@ export class BookmarkService {
       },
       page,
     );
+  }
+
+  async findById(userId: string, bookmarkId: string) {
+    const bookmark = await this.prisma.bookmark.findUnique({
+      where: {
+        id: bookmarkId,
+      },
+    });
+
+    // if (!bookmark || bookmark.userId !== userId) {
+    // }
   }
 }
