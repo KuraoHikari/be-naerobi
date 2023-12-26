@@ -33,11 +33,6 @@ export class AuthService {
 
       return tokens;
     } catch (error: any) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ForbiddenException('Credentials taken');
-        }
-      }
       throw error;
     }
   }
@@ -70,54 +65,67 @@ export class AuthService {
   }
 
   async updateRtHash(userId: string, rt: string): Promise<void> {
-    const hash = await argon.hash(rt);
+    try {
+      const hash = await argon.hash(rt);
 
-    await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        hashedRt: hash,
-      },
-    });
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          hashedRt: hash,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async logout(userId: string): Promise<boolean> {
-    await this.prisma.user.update({
-      where: {
-        id: userId,
-        hashedRt: {
-          not: null,
+    try {
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+          hashedRt: {
+            not: null,
+          },
         },
-      },
-      data: {
-        hashedRt: null,
-      },
-    });
-    return true;
+        data: {
+          hashedRt: null,
+        },
+      });
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async refreshToken(userId: string, rt: string): Promise<Tokens> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
 
-    if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied');
+      if (!user || !user.hashedRt)
+        throw new ForbiddenException('Access Denied');
 
-    const rtMatches = await argon.verify(user.hashedRt, rt);
-    if (!rtMatches) throw new ForbiddenException('Access Denied');
+      const rtMatches = await argon.verify(user.hashedRt, rt);
+      if (!rtMatches) throw new ForbiddenException('Access Denied');
 
-    const tokens = await this.getTokens(user.id, user.email);
-    await this.updateRtHash(user.id, tokens.refresh_token);
+      const tokens = await this.getTokens(user.id, user.email);
+      await this.updateRtHash(user.id, tokens.refresh_token);
 
-    return tokens;
+      return tokens;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getTokens(userId: string, email: string): Promise<Tokens> {
     const jwtPayload: JwtPayload = {
-      sub: userId,
+      id: userId,
       email: email,
     };
 

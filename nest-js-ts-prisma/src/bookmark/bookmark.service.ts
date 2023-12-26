@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+
 import { Bookmark, Prisma } from '@prisma/client';
 import {
-  PaginateFunction,
+  FindOneWithAuthResult,
   PaginateOptions,
   PaginatedResult,
-  paginator,
-} from '../lib/paginator';
-
-const paginate: PaginateFunction = paginator({ perPage: 10 });
+} from 'src/prisma/dto/prismaCustom.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class BookmarkService {
@@ -20,10 +18,10 @@ export class BookmarkService {
     page,
   }: {
     where?: Prisma.BookmarkWhereInput;
-    orderBy?: Prisma.BookmarkOrderByWithRelationInput;
+    orderBy?: Prisma.BookmarkOrderByWithRelationAndSearchRelevanceInput;
     page?: PaginateOptions;
   }): Promise<PaginatedResult<Bookmark>> {
-    return paginate(
+    return this.prisma.paginator({ perPage: 10 })(
       this.prisma.bookmark,
       {
         where,
@@ -33,14 +31,13 @@ export class BookmarkService {
     );
   }
 
-  async findById(userId: string, bookmarkId: string) {
-    const bookmark = await this.prisma.bookmark.findUnique({
-      where: {
-        id: bookmarkId,
-      },
-    });
-
-    // if (!bookmark || bookmark.userId !== userId) {
-    // }
+  async findById({
+    userId,
+    where,
+  }: {
+    userId: string;
+    where: Prisma.BookmarkWhereInput;
+  }): Promise<FindOneWithAuthResult<Bookmark>> {
+    return this.prisma.findOneWithAuth({ userId })(this.prisma.bookmark, where);
   }
 }

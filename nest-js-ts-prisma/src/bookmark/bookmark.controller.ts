@@ -1,18 +1,12 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
-import { GetCurrentUser, GetCurrentUserId, Public } from '../common/decorators';
-import { BookmarkService } from './bookmark.service';
+import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
+
 import { Sorting, SortingParams } from 'src/lib/sortingParam';
 import { Filtering, FilteringParams } from 'src/lib/filterParam';
 import { Pagination, PaginationParams } from 'src/lib/paginationParam';
+import { GetCurrentUserId, Public } from 'src/common/decorators';
+
 import { BookmarkParamId } from './dto/bookmark.dto';
+import { BookmarkService } from './bookmark.service';
 
 @Controller('bookmark')
 export class BookmarkController {
@@ -38,13 +32,12 @@ export class BookmarkController {
     });
   }
 
-  @Public()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   getBookmarkById(
-    @GetCurrentUserId() userId: number,
+    @GetCurrentUserId() userId: string,
     @Param() { id }: BookmarkParamId,
   ) {
-    return { id };
+    return this.bookmarkService.findById({ userId, where: { id } });
   }
 }

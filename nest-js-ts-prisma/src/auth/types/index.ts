@@ -1,6 +1,6 @@
 export type JwtPayload = {
   email: string;
-  sub: string;
+  id: string;
 };
 
 export type JwtPayloadWithRt = JwtPayload & { refreshToken: string };
