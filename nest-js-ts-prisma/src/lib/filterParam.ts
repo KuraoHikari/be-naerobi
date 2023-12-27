@@ -35,9 +35,9 @@ export const FilteringParams = createParamDecorator(
 
     if (!filter) return null;
 
-    if (typeof validParams != 'object')
+    if (typeof validParams != 'object') {
       throw new BadRequestException('Invalid filter parameter');
-
+    }
     const filterArray = filter.split(',');
 
     const filterObject: Filtering = {};
@@ -46,8 +46,7 @@ export const FilteringParams = createParamDecorator(
       if (
         !filterExpression.match(
           /^[a-zA-Z0-9_]+:(equals|not|gt|gte|lt|lte|contains):[a-zA-Z0-9_,]+$/,
-        ) &&
-        !filterExpression.match(/^[a-zA-Z0-9_]+:(isnull|isnotnull)$/)
+        )
       ) {
         throw new BadRequestException('Invalid filter parameter');
       }

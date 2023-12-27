@@ -40,4 +40,17 @@ export class BookmarkService {
   }): Promise<FindOneWithAuthResult<Bookmark>> {
     return this.prisma.findOneWithAuth({ userId })(this.prisma.bookmark, where);
   }
+
+  async deleteById({
+    userId,
+    bookmarkId,
+  }: {
+    userId: string;
+    bookmarkId: string;
+  }) {
+    await this.findById({ userId, where: { id: bookmarkId } });
+    await this.prisma.bookmark.delete({ where: { id: bookmarkId } });
+
+    return true;
+  }
 }

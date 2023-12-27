@@ -22,14 +22,7 @@ export class BookmarkController {
     @FilteringParams(['title', 'description', 'link', 'id'])
     filter?: Filtering,
   ) {
-    return this.bookmarkService.findMany({
-      where: filter,
-      orderBy: sort,
-      page: {
-        page: paginationParams.page,
-        perPage: paginationParams.size,
-      },
-    });
+    return { paginationParams, sort, filter };
   }
 
   @Get(':id')
