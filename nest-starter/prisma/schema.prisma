@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  ADMIN
+  USER
+}
+
+//refactor the services to work with this
+model AuthUser {
+  id           String   @id
+  type         UserType @default(USER)
+  email        String   @unique
+  password     String
+  refreshToken String?  @db.VarChar(2048)
+  user         User     @relation(fields: [id], references: [id])
+}
+
+model User {
+  id       String    @id @default(uuid())
+  AuthUser AuthUser?
+  avatar   String?
+  Posts    Post[]
+}
+
+model Post {
+  id          String    @id @default(uuid())
+  content     String    @db.VarChar(2048)
+  author      User      @relation(fields: [authorId], references: [id])
+  isPublished Boolean   @default(false)
+  authorId    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+}
