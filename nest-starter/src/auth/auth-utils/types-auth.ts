@@ -1,4 +1,5 @@
 import { AuthUser } from '@prisma/client';
+
 import { OmitStrict } from '../../utils/types';
 
 export type TokenData = OmitStrict<

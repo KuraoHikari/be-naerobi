@@ -1,5 +1,3 @@
-import { AuthService } from './../auth/auth.service';
-import { TokenData } from '../auth/auth-utils/types-auth';
 import {
   Controller,
   Get,
@@ -10,21 +8,20 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-
-import { UserService } from './user.service';
-
-import { Roles } from '../auth/auth-utils/roles.decorator';
+import { Request, Route } from 'tsoa';
 import { UserType } from '@prisma/client';
 import { subject } from '@casl/ability';
-import { CaslForbiddenError } from '../utils/casl/casl-forbidden-error.decorator';
-import { CaslForbiddenErrorI } from '../utils/casl/casl-rules.factory';
-
 import { ApiConsumes } from '@nestjs/swagger';
 
+import { UserService } from './user.service';
+import { Roles } from '../auth/auth-utils/roles.decorator';
+import { AuthService } from '../auth/auth.service';
+import { TokenData } from '../auth/auth-utils/types-auth';
+import { UpdateUserWithAvatarDto } from '../auth/dto/update-user.dto';
 import { JwtUser } from '../auth/auth-utils/user.decorator';
 
-import { UpdateUserWithAvatarDto } from '../auth/dto/update-user.dto';
-import { Request, Route } from 'tsoa';
+import { CaslForbiddenError } from '../utils/casl/casl-forbidden-error.decorator';
+import { CaslForbiddenErrorI } from '../utils/casl/casl-rules.factory';
 import { PaginatorDto } from '../utils/paginators.ts/dto/paginator.normal.dto';
 
 @Route('user')

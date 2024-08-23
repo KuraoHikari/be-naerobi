@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { CookieService } from './auth-utils/cookie.service';
 import { JwtUser } from './auth-utils/user.decorator';
 import { RegisterAuthUserDto } from './dto/register-user.dto';
@@ -16,7 +17,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Public } from './auth-utils/public.decorator';
-import { Response } from 'express';
 
 import { COOKIE_REFRESH_TOKEN_NAME, Mb } from '../utils/constant';
 

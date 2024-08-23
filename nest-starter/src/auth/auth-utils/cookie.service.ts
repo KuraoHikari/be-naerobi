@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { Response, CookieOptions } from 'express';
 
 import { Env } from '../../utils/env';
-import { CookieOptions } from 'express';
 import {
   COOKIE_ACCESS_TOKEN_NAME,
   COOKIE_REFRESH_TOKEN_NAME,
 } from '../../utils/constant';
-
-import { Response } from 'express';
 
 @Injectable()
 export class CookieService {

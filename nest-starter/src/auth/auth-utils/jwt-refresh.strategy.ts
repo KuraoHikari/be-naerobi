@@ -1,12 +1,14 @@
-import { TokenData } from '../../auth/auth-utils/types-auth';
-import { AuthService } from '../auth.service';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 
+import { TokenData } from '../../auth/auth-utils/types-auth';
+import { AuthService } from '../auth.service';
+
 import { COOKIE_REFRESH_TOKEN_NAME } from '../../utils/constant';
 import { Env } from '../../utils/env';
 import { RequestExtended } from '../../utils/types';
+
 import { tokenPayload } from './types-auth';
 
 @Injectable()

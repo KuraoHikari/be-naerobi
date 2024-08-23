@@ -1,4 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
 import { RequestExtended } from '../../utils/types';
 
 export const JwtUser = createParamDecorator(

@@ -6,11 +6,10 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
 import { JwtStrategy } from './auth-utils/jwt.strategy';
+import { CookieService } from './auth-utils/cookie.service';
 import { RefreshTokenStrategy } from './auth-utils/jwt-refresh.strategy';
 
 import { UserModule } from '../user/user.module';
-
-import { CookieService } from './auth-utils/cookie.service';
 
 @Global()
 @Module({
