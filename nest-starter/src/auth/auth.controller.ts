@@ -26,7 +26,7 @@ import { Request, Route } from 'tsoa';
 import { TokenData } from './auth-utils/types-auth';
 import { RefreshTokenGuard } from './auth-utils/jwt-refresh.guard';
 import { RequestExtended } from '../utils/types';
-import { multerOptions } from 'src/utils/multer.config';
+import { multerOptions } from '../utils/multer.config';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Route('auth')

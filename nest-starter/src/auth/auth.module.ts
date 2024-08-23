@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth-utils/jwt.strategy';
 import { RefreshTokenStrategy } from './auth-utils/jwt-refresh.strategy';
 
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
 
 import { CookieService } from './auth-utils/cookie.service';
 

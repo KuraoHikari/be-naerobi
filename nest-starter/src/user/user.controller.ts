@@ -1,5 +1,5 @@
 import { AuthService } from './../auth/auth.service';
-import { TokenData } from 'src/auth/auth-utils/types-auth';
+import { TokenData } from '../auth/auth-utils/types-auth';
 import {
   Controller,
   Get,
@@ -13,7 +13,7 @@ import {
 
 import { UserService } from './user.service';
 
-import { Roles } from 'src/auth/auth-utils/roles.decorator';
+import { Roles } from '../auth/auth-utils/roles.decorator';
 import { UserType } from '@prisma/client';
 import { subject } from '@casl/ability';
 import { CaslForbiddenError } from '../utils/casl/casl-forbidden-error.decorator';

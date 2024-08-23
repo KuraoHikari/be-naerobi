@@ -1,4 +1,4 @@
-import { TokenData } from 'src/auth/auth-utils/types-auth';
+import { TokenData } from '../../auth/auth-utils/types-auth';
 import { AuthService } from '../auth.service';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';

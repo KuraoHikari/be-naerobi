@@ -1,4 +1,4 @@
-import { TokenData } from 'src/auth/auth-utils/types-auth';
+import { TokenData } from '../auth/auth-utils/types-auth';
 import { Request } from 'express';
 import { CaslForbiddenErrorI } from './casl/casl-rules.factory';
 
