@@ -1,3 +1,5 @@
+import { Observable, catchError } from 'rxjs';
+
 import {
   Injectable,
   NestInterceptor,
@@ -5,7 +7,7 @@ import {
   ExecutionContext,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { Observable, catchError } from 'rxjs';
+
 import { cConflictException } from './errors/conflict.exception';
 import { cNotFoundException } from './errors/not-found.exception';
 import { cInternalServerErrorException } from './errors/internal-server-error.exception';

@@ -1,13 +1,14 @@
-import { Global, Logger, Module } from '@nestjs/common';
-import { CacheModule } from '@nestjs/cache-manager';
-import { UserModule } from './user/user.module';
-import { PrismaModule } from 'nestjs-prisma';
-import { AuthModule } from './auth/auth.module';
-
-import { PostModule } from './post/post.module';
-import { cacheMinute } from './utils/constant';
 import type { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-yet';
+import { PrismaModule } from 'nestjs-prisma';
+
+import { Global, Logger, Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
+
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { PostModule } from './post/post.module';
+import { cacheMinute } from './utils/constant';
 import { Env } from './utils/env';
 
 @Global()

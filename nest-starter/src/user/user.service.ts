@@ -1,13 +1,12 @@
 import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
-
-import { UpdateUserWithAvatarDto } from '../auth/dto/update-user.dto';
 import { Prisma } from '@prisma/client';
 
-import { FilePrefix } from '../utils/constant';
+import { UpdateUserWithAvatarDto } from '../auth/dto/update-user.dto';
 
 import { PaginationArgs, paginator } from '../utils/paginators.ts/paginator';
 import { PaginatorDto } from '../utils/paginators.ts/dto/paginator.normal.dto';
+import { FilePrefix } from '../utils/constant';
 
 @Injectable()
 export class UserService {

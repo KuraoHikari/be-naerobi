@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
-import { UserService } from '../user/user.service';
+
 import { CreatePostDto } from './dto/create-post.dto';
+import { UserService } from '../user/user.service';
+
 import { cForbiddenException } from '../utils/exception/errors/forbidden.exception';
 import { PaginationArgs, paginator } from '../utils/paginators.ts/paginator';
 import { PaginatorDto } from '../utils/paginators.ts/dto/paginator.normal.dto';

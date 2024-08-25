@@ -1,12 +1,11 @@
+import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { ZodDtoStatic } from '@anatine/zod-nestjs';
+
 import { cBadRequestException } from './errors/bad-request.exception';
 /**
  * This file was originally taken directly from:
  *   https://github.com/anatine/zod-plugins/blob/main/packages/zod-nestjs/src/lib/zod-validation-pipe.ts
  */
-
-import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
-
-import { ZodDtoStatic } from '@anatine/zod-nestjs';
 
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {

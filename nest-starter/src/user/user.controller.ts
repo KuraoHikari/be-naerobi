@@ -1,3 +1,5 @@
+import { Request, Route } from 'tsoa';
+
 import {
   Controller,
   Get,
@@ -8,7 +10,6 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { Request, Route } from 'tsoa';
 import { UserType } from '@prisma/client';
 import { subject } from '@casl/ability';
 import { ApiConsumes } from '@nestjs/swagger';

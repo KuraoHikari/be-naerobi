@@ -1,19 +1,22 @@
-import { RolesGuard } from './auth/auth-utils/roles.decorator';
-import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { PrismaService } from 'nestjs-prisma';
-
-import { VersioningType } from '@nestjs/common';
-import cookieParser from 'cookie-parser';
-import swaggerTsoa from '../swagger.json';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import { PrismaService } from 'nestjs-prisma';
+import cookieParser from 'cookie-parser';
+
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { VersioningType } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
+import { RolesGuard } from './auth/auth-utils/roles.decorator';
+import { AppModule } from './app.module';
+
+import swaggerTsoa from '../swagger.json';
 import { JwtAuthGuard } from './auth/auth-utils/jwt-auth.guard';
+
 import { PrismaErrorInterceptor } from './utils/exception/prisma-error.interceptor';
 import { AllExceptionsFilter } from './utils/exception/all-exceptions.filter';
 import { Env } from './utils/env';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import { tsoaResponseToNestDocument } from './utils/tsoaResponseToNestDocument';
 import { ZodValidationPipe } from './utils/exception/zod-validation-pipe';
 

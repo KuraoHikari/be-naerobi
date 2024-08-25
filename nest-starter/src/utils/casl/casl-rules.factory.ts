@@ -1,8 +1,9 @@
-import { TokenData } from '../../auth/auth-utils/types-auth';
-import { AbilityBuilder, PureAbility } from '@casl/ability';
+import { AbilityBuilder, PureAbility, ForbiddenError } from '@casl/ability';
 import { PrismaQuery, Subjects, createPrismaAbility } from '@casl/prisma';
+
 import { SubjectsList } from './generated/subjectsList';
-import { ForbiddenError } from '@casl/ability';
+
+import { TokenData } from '../../auth/auth-utils/types-auth';
 
 export type Action = 'manage' | 'create' | 'read' | 'update' | 'delete';
 

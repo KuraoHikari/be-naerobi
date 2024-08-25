@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { ForbiddenError } from '@casl/ability';
 
 import { createForUser } from './casl-rules.factory';
 
-import { ForbiddenError } from '@casl/ability';
 import { RequestExtended } from '../types';
 
 export const CaslForbiddenError = createParamDecorator(
